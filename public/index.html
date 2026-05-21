@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+      <link rel="icon" type="image/jpeg" href="/chatlogo.jpg">
+      
+</head>
+<body>
+    <h1>Chatting</h1>
+
+    <input type="text" id="message" placeholder="Enter message" />
+  <button id="sendBtn">Send</button>
+  <div id="messages"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+//    const socket = io();
+//    const sendBtn = document.getElementById("sendBtn");
+//    const messageInput = document.getElementById("message");
+//    const allMessages = document.getElementById("messages");
+
+//    socket.on('message', (message)=>{
+//     const p = document.createElement('p');
+//     p.innerText = message;
+//     allMessages.appendChild(p);
+//    } );
+
+
+//    sendBtn.addEventListener("click", (e)=>{
+//     const message = messageInput.value;
+//     console.log(message);
+//     socket.emit('user-message', message);
+//    })
+
+
+ const socket = io();
+
+ const sendBtn = document.getElementById("sendBtn");
+ const messageInput = document.getElementById("message");
+ const allMessages = document.getElementById("messages");
+
+ // incoming messages -> LEFT
+ socket.on('message', (message) => {
+
+    const p = document.createElement('p');
+
+    p.innerText = message;
+
+    p.style.textAlign = "left";
+
+    allMessages.appendChild(p);
+
+ });
+
+ // your messages -> RIGHT
+ sendBtn.addEventListener("click", () => {
+
+    const message = messageInput.value;
+
+    socket.emit('user-message', message);
+
+    const p = document.createElement('p');
+
+    p.innerText = message;
+
+    p.style.textAlign = "right";
+
+    allMessages.appendChild(p);
+
+    messageInput.value = "";
+
+ });
+
+  </script>
+</body>
+</html>
