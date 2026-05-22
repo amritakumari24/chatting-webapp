@@ -1,24 +1,28 @@
-const http = require('http')
+const http = require('http');
 const express = require('express');
 const path = require('path');
 const { Server } = require('socket.io');
 const app = express();
-
 const server = http.createServer(app);
-const io = new Server(server)
+const io = new Server(server);
 
-//socket io
-io.on('connection', (socket)=>{
-    socket.on('user-message', message=>{
-       socket.broadcast.emit('message', message)
-    } )
-})
+// Socket.IO
+io.on('connection', (socket) => {
+    console.log('User connected');
+    socket.on('user-message', (message) => {
+        socket.broadcast.emit('message', message);
+    });
+});
 
+// Serve static frontend
 app.use(express.static(path.resolve('./public')));
+// Home route
+app.get('/', (req, res) => {
+    return res.sendFile(path.resolve('./public/index.html'));
+});
 
-app.get('/', (req, res)=>{
-    return res.sendFile('/public/index.html')
-})
-server.listen(9000,()=>{
-    console.log("server started")
+// Dynamic PORT for Render
+const PORT = process.env.PORT || 9000;
+server.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });
