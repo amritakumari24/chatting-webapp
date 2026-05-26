@@ -9,9 +9,12 @@ const io = new Server(server);
 // Socket.IO
 io.on('connection', (socket) => {
     console.log('User connected');
-    socket.on('user-message', (message) => {
-        socket.broadcast.emit('message', message);
-    });
+    socket.on('user-message', (data) => {
+    socket.broadcast.emit('message', data);
+});
+socket.on('typing...', (username)=>{
+    socket.broadcast.emit('typing...', username);
+})
 });
 
 // Serve static frontend

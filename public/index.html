@@ -1,49 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat WebApp</title>
-      <link rel="icon" type="image/jpeg" href="/chatlogo.jpg">
-      
-</head>
 <body>
     <h1>Chatting WebApp</h1>
 
+    <input type="text" id="username" placeholder="Enter username" />
+    <br><br>
+
     <input type="text" id="message" placeholder="Enter message" />
-  <button id="sendBtn">Send</button>
-  <div id="messages"></div>
+    <button id="sendBtn">Send</button>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
+    <div id="messages"></div>
 
- const socket = io();
+    <script src="/socket.io/socket.io.js"></script>
 
- const sendBtn = document.getElementById("sendBtn");
- const messageInput = document.getElementById("message");
- const allMessages = document.getElementById("messages");
+    <script>
+        const socket = io();
 
- // incoming messages -> LEFT
- socket.on('message', (message) => {
-    const p = document.createElement('p');
-    p.innerText = message;
-    p.style.textAlign = "left";
-    allMessages.appendChild(p);
+        const sendBtn = document.getElementById("sendBtn");
+        const messageInput = document.getElementById("message");
+        const usernameInput = document.getElementById("username");
+        const allMessages = document.getElementById("messages");
 
- });
+        // Incoming messages
+        socket.on('message', (data) => {
+            const p = document.createElement('p');
 
- // your messages -> RIGHT
- sendBtn.addEventListener("click", () => {
-    const message = messageInput.value;
-    socket.emit('user-message', message);
-    const p = document.createElement('p');
-    p.innerText = message;
-    p.style.textAlign = "right";
-    allMessages.appendChild(p);
-    messageInput.value = "";
+            p.innerText = `${data.username}: ${data.message}`;
+            p.style.textAlign = "left";
 
- });
+            allMessages.appendChild(p);
+        });
 
-  </script>
+        // Send message
+        sendBtn.addEventListener("click", () => {
+
+            const message = messageInput.value;
+            const username = usernameInput.value;
+
+            // Send object
+            socket.emit('user-message', {
+                username,
+                message
+            });
+
+            // Show own message
+            const p = document.createElement('p');
+
+            p.innerText = `You (${username}): ${message}`;
+            p.style.textAlign = "right";
+
+            allMessages.appendChild(p);
+
+            messageInput.value = "";
+        });
+
+    </script>
 </body>
-</html>
